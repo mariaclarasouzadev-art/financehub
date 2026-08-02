@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FinanceHub — Controle Financeiro Inteligente</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" aria-label="Menu lateral">
+      <div class="brand">
+        <div class="logo">FinanceHub</div>
+      </div>
+      <nav class="nav" role="navigation" aria-label="Navegação principal">
+        <button class="nav-item active" data-section="overview" aria-controls="overview">Visão geral</button>
+        <button class="nav-item" data-section="transactions" aria-controls="transactions">Transações</button>
+        <button class="nav-item" data-section="budgets" aria-controls="budgets">Orçamento</button>
+        <button class="nav-item" data-section="goals" aria-controls="goals">Metas</button>
+        <button class="nav-item" data-section="reports" aria-controls="reports">Relatórios</button>
+        <button class="nav-item" data-section="settings" aria-controls="settings">Configurações</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <small class="muted">Feito por Maria Clara</small>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <!-- HEADER -->
+      <header class="header" id="header">
+        <div class="left">
+          <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" title="Abrir menu">
+            <!-- simple hamburger -->
+            <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="20" height="2" rx="1" fill="#1E293B"/>
+              <rect y="6" width="20" height="2" rx="1" fill="#1E293B"/>
+              <rect y="12" width="20" height="2" rx="1" fill="#1E293B"/>
+            </svg>
+          </button>
+          <div class="greeting" id="greeting">Olá, <span id="userName">Maria Clara</span>!</div>
+        </div>
+
+        <div class="center">
+          <div class="today" id="today">—</div>
+        </div>
+
+        <div class="right">
+          <label class="theme-switch" title="Alternar tema">
+            <input type="checkbox" id="themeToggle" aria-label="Alternar tema claro/escuro">
+            <span class="switch-track" aria-hidden="true"></span>
+          </label>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <main class="content">
+        <!-- Overview section -->
+        <section id="overview" class="section active-section" tabindex="0" aria-labelledby="overviewTitle">
+          <div class="section-header">
+            <h2 id="overviewTitle">Visão geral</h2>
+            <div class="actions">
+              <button class="btn primary" id="addTransactionBtn">Adicionar transação</button>
+            </div>
+          </div>
+
+          <!-- Cards -->
+          <div class="cards">
+            <div class="card" id="card-balance" aria-live="polite">
+              <div class="card-title">Saldo disponível</div>
+              <div class="card-value" id="balanceValue">R$ 0,00</div>
+            </div>
+
+            <div class="card" id="card-income">
+              <div class="card-title">Total de receitas</div>
+              <div class="card-value" id="incomeValue">R$ 0,00</div>
+            </div>
+
+            <div class="card" id="card-expense">
+              <div class="card-title">Total de despesas</div>
+              <div class="card-value" id="expenseValue">R$ 0,00</div>
+            </div>
+
+            <div class="card" id="card-savings">
+              <div class="card-title">Economia do mês</div>
+              <div class="card-value" id="savingsValue">R$ 0,00</div>
+            </div>
+          </div>
+
+          <!-- Resumo financeiro (gráfico de barras last 6 months) -->
+          <div class="panel">
+            <h3 class="panel-title">Resumo financeiro (últimos 6 meses)</h3>
+            <div id="summaryChart" class="chart-area" role="img" aria-label="Gráfico de receitas e despesas dos últimos seis meses">
+              <div class="chart-legend">
+                <span class="legend income-dot">Receitas</span>
+                <span class="legend expense-dot">Despesas</span>
+              </div>
+              <div id="barsContainer" class="bars"></div>
+              <div id="noSummaryMessage" class="empty-state" hidden>Nenhuma transação para exibir o resumo.</div>
+            </div>
+          </div>
+
+          <!-- Distribuição de despesas -->
+          <div class="panel">
+            <h3 class="panel-title">Distribuição de despesas</h3>
+            <div id="distribution" class="distribution">
+              <div id="distributionList" class="distribution-list"></div>
+              <div id="noDistributionMessage" class="empty-state" hidden>Nenhuma despesa registrada.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Transactions section -->
+        <section id="transactions" class="section" tabindex="0" aria-labelledby="transactionsTitle" hidden>
+          <div class="section-header">
+            <h2 id="transactionsTitle">Transações</h2>
+            <div class="actions">
+              <button class="btn primary" id="addTransactionBtn2">Adicionar transação</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <form id="filtersForm" class="filters" aria-label="Filtros de transações">
+              <div class="filter-group">
+                <label for="searchDesc">Buscar descrição</label>
+                <input id="searchDesc" type="search" placeholder="Pesquisar..." />
+              </div>
+
+              <div class="filter-group">
+                <label for="filterCategory">Categoria</label>
+                <select id="filterCategory">
+                  <option value="">Todas</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filterType">Tipo</label>
+                <select id="filterType">
+                  <option value="">Todos</option>
+                  <option value="income">Receita</option>
+                  <option value="expense">Despesa</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filterMonth">Mês</label>
+                <input id="filterMonth" type="month" />
+              </div>
+
+              <div class="filter-group">
+                <label for="sortBy">Ordenar por</label>
+                <select id="sortBy">
+                  <option value="date_desc">Data (mais recente)</option>
+                  <option value="date_asc">Data (mais antiga)</option>
+                  <option value="value_desc">Valor (maior)</option>
+                  <option value="value_asc">Valor (menor)</option>
+                </select>
+              </div>
+
+              <div class="filter-actions">
+                <button type="button" class="btn" id="clearFilters">Limpar</button>
+              </div>
+            </form>
+
+            <div id="transactionsTableWrapper" class="table-wrapper">
+              <table id="transactionsTable" class="table" aria-live="polite">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Forma</th>
+                    <th>Tipo</th>
+                    <th class="right">Valor</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="transactionsTbody"></tbody>
+              </table>
+              <div id="noTransactionsMessage" class="empty-state" hidden>Nenhuma transação encontrada.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Budgets -->
+        <section id="budgets" class="section" tabindex="0" aria-labelledby="budgetsTitle" hidden>
+          <div class="section-header">
+            <h2 id="budgetsTitle">Orçamento</h2>
+          </div>
+
+          <div class="panel">
+            <p class="muted">Defina um orçamento mensal por categoria. O sistema compara o gasto do mês selecionado com o planejado.</p>
+            <div id="budgetList" class="budget-list"></div>
+            <div id="noBudgetMessage" class="empty-state" hidden>Nenhum orçamento definido.</div>
+          </div>
+        </section>
+
+        <!-- Goals -->
+        <section id="goals" class="section" tabindex="0" aria-labelledby="goalsTitle" hidden>
+          <div class="section-header">
+            <h2 id="goalsTitle">Metas</h2>
+            <div class="actions">
+              <button class="btn primary" id="addGoalBtn">Adicionar meta</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div id="goalsList" class="goals-list"></div>
+            <div id="noGoalsMessage" class="empty-state" hidden>Nenhuma meta cadastrada.</div>
+          </div>
+        </section>
+
+        <!-- Reports -->
+        <section id="reports" class="section" tabindex="0" aria-labelledby="reportsTitle" hidden>
+          <div class="section-header">
+            <h2 id="reportsTitle">Relatórios</h2>
+          </div>
+
+          <div class="panel">
+            <div id="reportsText" class="reports-text"></div>
+            <div id="noReportsMessage" class="empty-state" hidden>Registre transações para gerar relatórios.</div>
+          </div>
+        </section>
+
+        <!-- Settings -->
+        <section id="settings" class="section" tabindex="0" aria-labelledby="settingsTitle" hidden>
+          <div class="section-header">
+            <h2 id="settingsTitle">Configurações</h2>
+          </div>
+
+          <div class="panel settings-panel">
+            <div class="form-row">
+              <label for="inputUserName">Nome do usuário</label>
+              <input id="inputUserName" type="text" />
+            </div>
+
+            <div class="form-row">
+              <label for="selectCurrency">Moeda</label>
+              <select id="selectCurrency" aria-label="Seleção de moeda">
+                <option value="BRL">Real (BRL)</option>
+                <option value="USD">Dólar (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label>Tema</label>
+              <div>
+                <button class="btn" id="themeLight">Claro</button>
+                <button class="btn" id="themeDark">Escuro</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <label>Dados</label>
+              <div class="settings-actions">
+                <button class="btn danger" id="clearAllData">Apagar todos os dados</button>
+                <button class="btn" id="restoreDemo">Restaurar dados de demonstração</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL: Transação -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+    <div class="modal-content" role="document">
+      <header class="modal-header">
+        <h3 id="modalTitle">Nova transação</h3>
+        <button class="modal-close" id="modalClose" aria-label="Fechar modal">&times;</button>
+      </header>
+
+      <form id="transactionForm" class="modal-body" novalidate>
+        <input type="hidden" id="txnId">
+        <div class="form-row">
+          <label for="txnDescription">Descrição<span class="required">*</span></label>
+          <input id="txnDescription" name="description" required />
+          <div class="invalid-message" id="errDescription" hidden>Descrição é obrigatória.</div>
+        </div>
+
+        <div class="form-row">
+          <label for="txnValue">Valor<span class="required">*</span></label>
+          <input id="txnValue" name="value" inputmode="decimal" required />
+          <div class="invalid-message" id="errValue" hidden>Valor deve ser maior que zero.</div>
+        </div>
+
+        <div class="form-row">
+          <label for="txnType">Tipo<span class="required">*</span></label>
+          <select id="txnType" name="type" required>
+            <option value="">Selecione</option>
+            <option value="income">Receita</option>
+            <option value="expense">Despesa</option>
+          </select>
+          <div class="invalid-message" id="errType" hidden>Tipo é obrigatório.</div>
+        </div>
+
+        <div class="form-row">
+          <label for="txnCategory">Categoria<span class="required">*</span></label>
+          <select id="txnCategory" name="category" required>
+            <option value="">Selecione</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Educação">Educação</option>
+            <option value="Lazer">Lazer</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Moradia">Moradia</option>
+            <option value="Outros">Outros</option>
+            <option value="Salário">Salário</option>
+          </select>
+          <div class="invalid-message" id="errCategory" hidden>Categoria é obrigatória.</div>
+        </div>
+
+        <div class="form-row">
+          <label for="txnDate">Data<span class="required">*</span></label>
+          <input id="txnDate" type="date" name="date" required />
+          <div class="invalid-message" id="errDate" hidden>Data é obrigatória.</div>
+        </div>
+
+        <div class="form-row">
+          <label for="txnPayment">Forma de pagamento</label>
+          <select id="txnPayment" name="payment">
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Cartão de débito">Cartão de débito</option>
+            <option value="Cartão de crédito">Cartão de crédito</option>
+            <option value="Pix">Pix</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="txnNote">Observação</label>
+          <textarea id="txnNote" rows="2"></textarea>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn" id="modalCancel">Cancelar</button>
+          <button type="submit" class="btn primary" id="modalSave">Salvar</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Goal (meta) -->
+  <div id="goalModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+    <div class="modal-content" role="document">
+      <header class="modal-header">
+        <h3 id="goalModalTitle">Nova meta</h3>
+        <button class="modal-close" id="goalModalClose" aria-label="Fechar modal">&times;</button>
+      </header>
+
+      <form id="goalForm" class="modal-body" novalidate>
+        <input type="hidden" id="goalId">
+        <div class="form-row">
+          <label for="goalName">Nome da meta<span class="required">*</span></label>
+          <input id="goalName" required />
+        </div>
+
+        <div class="form-row">
+          <label for="goalTarget">Valor desejado<span class="required">*</span></label>
+          <input id="goalTarget" inputmode="decimal" required />
+        </div>
+
+        <div class="form-row">
+          <label for="goalSaved">Valor já economizado</label>
+          <input id="goalSaved" inputmode="decimal" value="0" />
+        </div>
+
+        <div class="form-row">
+          <label for="goalDate">Data limite<span class="required">*</span></label>
+          <input id="goalDate" type="date" required />
+        </div>
+
+        <div class="form-row">
+          <label for="goalNote">Observação</label>
+          <textarea id="goalNote" rows="2"></textarea>
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn" id="goalCancel">Cancelar</button>
+          <button type="submit" class="btn primary" id="goalSave">Salvar</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
